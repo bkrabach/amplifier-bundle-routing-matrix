@@ -1,0 +1,82 @@
+name: quality
+description: "Best available models. Prioritizes capability over cost."
+updated: "2026-02-28"
+
+roles:
+  coding:
+    description: "Code generation, implementation, debugging"
+    candidates:
+      - provider: anthropic
+        model: claude-sonnet-*
+      - provider: openai
+        model: gpt-5.*-codex
+      - provider: github-copilot
+        model: claude-sonnet-*
+
+  coding-image:
+    description: "Image-related code work (UI, diagrams, vision tasks)"
+    candidates:
+      - provider: openai
+        model: gpt-5.*
+      - provider: google
+        model: gemini-*-pro
+      - provider: anthropic
+        model: claude-sonnet-*
+
+  planning:
+    description: "Architecture, design, complex multi-step reasoning"
+    candidates:
+      - provider: anthropic
+        model: claude-opus-4-6
+        config:
+          reasoning_effort: high
+      - provider: openai
+        model: gpt-5.*-pro
+        config:
+          reasoning_effort: high
+      - provider: github-copilot
+        model: claude-opus-4.6
+        config:
+          reasoning_effort: high
+
+  fast:
+    description: "Quick parsing, classification, utility work"
+    candidates:
+      - provider: anthropic
+        model: claude-sonnet-*
+      - provider: openai
+        model: gpt-5.*
+      - provider: github-copilot
+        model: claude-sonnet-*
+
+  general:
+    description: "Balanced catch-all for unspecialized tasks"
+    candidates:
+      - provider: anthropic
+        model: claude-sonnet-*
+      - provider: openai
+        model: gpt-5.*
+      - provider: github-copilot
+        model: claude-sonnet-*
+
+  research:
+    description: "Deep analysis, web search, long-horizon investigation"
+    candidates:
+      - provider: anthropic
+        model: claude-opus-4-6
+        config:
+          reasoning_effort: high
+      - provider: openai
+        model: gpt-5.*-pro
+        config:
+          reasoning_effort: high
+
+  agentic:
+    description: "Multi-turn autonomous tool use and task execution"
+    candidates:
+      - provider: anthropic
+        model: claude-sonnet-*
+      - provider: openai
+        model: gpt-5.*
+      - provider: github-copilot
+        model: claude-sonnet-*

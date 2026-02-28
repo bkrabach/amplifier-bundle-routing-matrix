@@ -1,0 +1,9 @@
+hooks:
+  - module: hooks-routing
+    source: routing-matrix:modules/hooks-routing
+    config:
+      default_matrix: balanced
+
+context:
+  include:
+    - routing-matrix:context/routing-instructions.md

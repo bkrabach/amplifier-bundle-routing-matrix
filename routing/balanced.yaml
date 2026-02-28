@@ -1,0 +1,102 @@
+name: balanced
+description: "Quality/cost balance for mixed workloads. Curated by Amplifier Foundation team."
+updated: "2026-02-28"
+
+roles:
+  coding:
+    description: "Code generation, implementation, debugging"
+    candidates:
+      - provider: anthropic
+        model: claude-sonnet-*
+      - provider: openai
+        model: gpt-5.*-codex
+      - provider: google
+        model: gemini-*-pro
+      - provider: github-copilot
+        model: claude-sonnet-*
+      - provider: ollama
+        model: "*"
+
+  coding-image:
+    description: "Image-related code work (UI, diagrams, vision tasks)"
+    candidates:
+      - provider: google
+        model: gemini-*-pro
+      - provider: openai
+        model: gpt-5.*
+      - provider: anthropic
+        model: claude-sonnet-*
+      - provider: github-copilot
+        model: gpt-5.*
+
+  planning:
+    description: "Architecture, design, complex multi-step reasoning"
+    candidates:
+      - provider: anthropic
+        model: claude-opus-4-6
+        config:
+          reasoning_effort: high
+      - provider: openai
+        model: gpt-5.*-pro
+        config:
+          reasoning_effort: high
+      - provider: github-copilot
+        model: claude-opus-4.6
+        config:
+          reasoning_effort: high
+      - provider: anthropic
+        model: claude-sonnet-*
+      - provider: google
+        model: gemini-*-pro
+
+  fast:
+    description: "Quick parsing, classification, utility work"
+    candidates:
+      - provider: github-copilot
+        model: gpt-4.*
+      - provider: anthropic
+        model: claude-haiku-*
+      - provider: openai
+        model: gpt-5-mini
+      - provider: google
+        model: gemini-*-flash
+      - provider: ollama
+        model: "*"
+
+  general:
+    description: "Balanced catch-all for unspecialized tasks"
+    candidates:
+      - provider: anthropic
+        model: claude-sonnet-*
+      - provider: openai
+        model: gpt-5.*
+      - provider: github-copilot
+        model: claude-sonnet-*
+      - provider: google
+        model: gemini-*-pro
+      - provider: ollama
+        model: "*"
+
+  research:
+    description: "Deep analysis, web search, long-horizon investigation"
+    candidates:
+      - provider: openai
+        model: gpt-5.*-pro
+      - provider: anthropic
+        model: claude-opus-4-6
+      - provider: github-copilot
+        model: claude-opus-4.6
+      - provider: google
+        model: gemini-*-pro
+
+  agentic:
+    description: "Multi-turn autonomous tool use and task execution"
+    candidates:
+      - provider: anthropic
+        model: claude-sonnet-*
+      - provider: openai
+        model: gpt-5.*
+      - provider: google
+        model: gemini-*-flash
+      - provider: github-copilot
+        model: claude-sonnet-*

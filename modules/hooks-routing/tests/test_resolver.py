@@ -1,0 +1,232 @@
+"""Tests for resolver module."""
+
+from __future__ import annotations
+
+from typing import Any
+from unittest.mock import AsyncMock, MagicMock
+
+import pytest
+
+from amplifier_hooks_routing.resolver import find_provider_by_type, resolve_model_role
+
+
+# ---------------------------------------------------------------------------
+# Helper to build mock providers dict
+# ---------------------------------------------------------------------------
+
+
+def _make_provider(
+    models: list[str] | None = None,
+    raises: bool = False,
+) -> MagicMock:
+    """Create a mock provider with optional list_models support."""
+    provider = MagicMock()
+    if models is not None:
+        if raises:
+            provider.list_models = AsyncMock(side_effect=RuntimeError("boom"))
+        else:
+            provider.list_models = AsyncMock(return_value=models)
+    else:
+        # No list_models attribute
+        del provider.list_models
+    return provider
+
+
+# ---------------------------------------------------------------------------
+# find_provider_by_type tests
+# ---------------------------------------------------------------------------
+
+
+class TestFindProviderByType:
+    def test_exact_match(self) -> None:
+        prov = MagicMock()
+        providers = {"anthropic": prov}
+        result = find_provider_by_type(providers, "anthropic")
+        assert result == ("anthropic", prov)
+
+    def test_provider_prefix_match(self) -> None:
+        """'anthropic' matches key 'provider-anthropic'."""
+        prov = MagicMock()
+        providers = {"provider-anthropic": prov}
+        result = find_provider_by_type(providers, "anthropic")
+        assert result == ("provider-anthropic", prov)
+
+    def test_no_match_returns_none(self) -> None:
+        providers = {"provider-openai": MagicMock()}
+        result = find_provider_by_type(providers, "anthropic")
+        assert result is None
+
+
+# ---------------------------------------------------------------------------
+# resolve_model_role tests
+# ---------------------------------------------------------------------------
+
+
+class TestResolveModelRole:
+    @pytest.mark.asyncio
+    async def test_resolve_single_role_matches(self, sample_roles: dict) -> None:
+        """Role in matrix, provider installed, returns match."""
+        providers = {"provider-anthropic": _make_provider()}
+
+        result = await resolve_model_role(["general"], sample_roles, providers)
+
+        assert len(result) == 1
+        assert result[0]["provider"] == "anthropic"
+        assert result[0]["model"] == "claude-sonnet-4-20250514"
+
+    @pytest.mark.asyncio
+    async def test_resolve_fallback_to_second_role(self, sample_roles: dict) -> None:
+        """First role not in matrix, second matches."""
+        providers = {"provider-openai": _make_provider()}
+
+        result = await resolve_model_role(
+            ["nonexistent", "fast"], sample_roles, providers
+        )
+
+        assert len(result) == 1
+        assert result[0]["provider"] == "openai"
+        assert result[0]["model"] == "gpt-4o-mini"
+
+    @pytest.mark.asyncio
+    async def test_resolve_provider_not_installed_skips(
+        self, sample_roles: dict
+    ) -> None:
+        """Candidate provider not installed, falls to next candidate."""
+        # general has anthropic only; we only have openai installed
+        # coding has anthropic then openai
+        providers = {"provider-openai": _make_provider()}
+
+        result = await resolve_model_role(["coding"], sample_roles, providers)
+
+        assert len(result) == 1
+        assert result[0]["provider"] == "openai"
+        assert result[0]["model"] == "gpt-4o"
+
+    @pytest.mark.asyncio
+    async def test_resolve_glob_pattern(self) -> None:
+        """claude-sonnet-* resolves against list_models()."""
+        models = [
+            "claude-sonnet-4-20250514",
+            "claude-sonnet-3.5-20240620",
+            "claude-haiku-3-20240307",
+        ]
+        providers = {"provider-anthropic": _make_provider(models=models)}
+        roles = {
+            "coding": {
+                "description": "Code gen",
+                "candidates": [
+                    {"provider": "anthropic", "model": "claude-sonnet-*"},
+                ],
+            },
+        }
+
+        result = await resolve_model_role(["coding"], roles, providers)
+
+        assert len(result) == 1
+        assert result[0]["provider"] == "anthropic"
+        # Sorted descending, sonnet-4 > sonnet-3.5
+        assert result[0]["model"] == "claude-sonnet-4-20250514"
+
+    @pytest.mark.asyncio
+    async def test_resolve_no_match_returns_empty(self) -> None:
+        """No roles match anything → empty list."""
+        providers = {"provider-openai": _make_provider()}
+        roles = {
+            "coding": {
+                "description": "Code gen",
+                "candidates": [
+                    {"provider": "anthropic", "model": "claude-sonnet-4-20250514"},
+                ],
+            },
+        }
+
+        result = await resolve_model_role(["coding"], roles, providers)
+
+        assert result == []
+
+    @pytest.mark.asyncio
+    async def test_resolve_config_passed_through(self) -> None:
+        """Candidate with config has it in result."""
+        providers = {"provider-anthropic": _make_provider()}
+        roles = {
+            "planning": {
+                "description": "Planning",
+                "candidates": [
+                    {
+                        "provider": "anthropic",
+                        "model": "claude-opus-4-6",
+                        "config": {"reasoning_effort": "high"},
+                    },
+                ],
+            },
+        }
+
+        result = await resolve_model_role(["planning"], roles, providers)
+
+        assert len(result) == 1
+        assert result[0]["config"] == {"reasoning_effort": "high"}
+
+    @pytest.mark.asyncio
+    async def test_resolve_provider_type_flexible_matching(self) -> None:
+        """'anthropic' matches 'provider-anthropic' key."""
+        providers = {"provider-anthropic": _make_provider()}
+        roles = {
+            "general": {
+                "description": "General",
+                "candidates": [
+                    {"provider": "anthropic", "model": "claude-sonnet-4-20250514"},
+                ],
+            },
+        }
+
+        result = await resolve_model_role(["general"], roles, providers)
+
+        assert len(result) == 1
+        assert result[0]["provider"] == "anthropic"
+
+    @pytest.mark.asyncio
+    async def test_resolve_list_models_failure_skips(self) -> None:
+        """If list_models() raises, skip that candidate."""
+        providers = {
+            "provider-anthropic": _make_provider(models=[], raises=True),
+            "provider-openai": _make_provider(),
+        }
+        roles = {
+            "coding": {
+                "description": "Code gen",
+                "candidates": [
+                    {"provider": "anthropic", "model": "claude-sonnet-*"},
+                    {"provider": "openai", "model": "gpt-4o"},
+                ],
+            },
+        }
+
+        result = await resolve_model_role(["coding"], roles, providers)
+
+        assert len(result) == 1
+        assert result[0]["provider"] == "openai"
+        assert result[0]["model"] == "gpt-4o"
+
+    @pytest.mark.asyncio
+    async def test_resolve_glob_no_match_skips(self) -> None:
+        """Glob pattern that matches nothing skips to next candidate."""
+        providers = {
+            "provider-anthropic": _make_provider(
+                models=["claude-haiku-3-20240307"]
+            ),
+            "provider-openai": _make_provider(),
+        }
+        roles = {
+            "coding": {
+                "description": "Code gen",
+                "candidates": [
+                    {"provider": "anthropic", "model": "claude-sonnet-*"},
+                    {"provider": "openai", "model": "gpt-4o"},
+                ],
+            },
+        }
+
+        result = await resolve_model_role(["coding"], roles, providers)
+
+        assert len(result) == 1
+        assert result[0]["provider"] == "openai"

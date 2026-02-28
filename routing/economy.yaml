@@ -1,0 +1,88 @@
+name: economy
+description: "Cost-optimized routing. Prefers free tiers and budget models."
+updated: "2026-02-28"
+
+roles:
+  coding:
+    description: "Code generation, implementation, debugging"
+    candidates:
+      - provider: github-copilot
+        model: gpt-4.*
+      - provider: ollama
+        model: "*"
+      - provider: anthropic
+        model: claude-haiku-*
+      - provider: openai
+        model: gpt-5-mini
+      - provider: google
+        model: gemini-*-flash
+
+  coding-image:
+    description: "Image-related code work (UI, diagrams, vision tasks)"
+    candidates:
+      - provider: google
+        model: gemini-*-flash
+      - provider: github-copilot
+        model: gpt-4.*
+      - provider: openai
+        model: gpt-5-mini
+
+  planning:
+    description: "Architecture, design, complex multi-step reasoning"
+    candidates:
+      - provider: github-copilot
+        model: claude-sonnet-*
+      - provider: anthropic
+        model: claude-sonnet-*
+      - provider: openai
+        model: gpt-5.*
+      - provider: google
+        model: gemini-*-pro
+
+  fast:
+    description: "Quick parsing, classification, utility work"
+    candidates:
+      - provider: github-copilot
+        model: gpt-4.*
+      - provider: ollama
+        model: "*"
+      - provider: google
+        model: gemini-*-flash
+      - provider: anthropic
+        model: claude-haiku-*
+
+  general:
+    description: "Balanced catch-all for unspecialized tasks"
+    candidates:
+      - provider: github-copilot
+        model: gpt-4.*
+      - provider: ollama
+        model: "*"
+      - provider: anthropic
+        model: claude-haiku-*
+      - provider: openai
+        model: gpt-5-mini
+      - provider: google
+        model: gemini-*-flash
+
+  research:
+    description: "Deep analysis, web search, long-horizon investigation"
+    candidates:
+      - provider: github-copilot
+        model: claude-sonnet-*
+      - provider: openai
+        model: gpt-5.*
+      - provider: anthropic
+        model: claude-sonnet-*
+
+  agentic:
+    description: "Multi-turn autonomous tool use and task execution"
+    candidates:
+      - provider: github-copilot
+        model: gpt-4.*
+      - provider: ollama
+        model: "*"
+      - provider: google
+        model: gemini-*-flash
+      - provider: anthropic
+        model: claude-haiku-*
