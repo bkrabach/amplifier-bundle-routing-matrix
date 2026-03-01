@@ -45,7 +45,9 @@ REMOVED_ROLES = frozenset({"agentic", "planning", "coding-image"})
 REQUIRED_ROLES = frozenset({"general", "fast"})
 
 # Models that must never appear in any matrix
-BLACKLISTED_MODELS = {"gpt-4.1", "claude-opus-4.6-fast", "claude-opus-4-6-fast"}
+BLACKLISTED_MODELS = frozenset(
+    {"gpt-4.1", "claude-opus-4.6-fast", "claude-opus-4-6-fast"}
+)
 
 
 # ---------------------------------------------------------------------------
@@ -94,7 +96,9 @@ class TestAllMatrices:
     @pytest.mark.parametrize("matrix_file", _matrix_ids())
     def test_updated_date(self, matrix_file: str) -> None:
         data = yaml.safe_load((ROUTING_DIR / matrix_file).read_text())
-        assert data.get("updated") == "2026-03-01", (
+        assert (
+            data.get("updated") == "2026-03-01"
+        ), (  # Sync with latest matrix update date
             f"{matrix_file}: updated field is '{data.get('updated')}', expected '2026-03-01'"
         )
 
