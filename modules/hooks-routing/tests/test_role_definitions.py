@@ -97,7 +97,10 @@ class TestQuickDecisionFlowchart:
         """The flowchart should reference every role as a destination."""
         # Extract the flowchart section (between heading and next ##)
         start = role_defs_content.index("## Quick Decision Flowchart")
-        next_section = role_defs_content.index("\n## ", start + 1)
+        try:
+            next_section = role_defs_content.index("\n## ", start + 1)
+        except ValueError:
+            next_section = len(role_defs_content)
         flowchart = role_defs_content[start:next_section]
         for role in ALL_ROLES:
             assert role in flowchart, f"Flowchart missing reference to role: {role}"
@@ -175,7 +178,10 @@ class TestModelTierGrid:
     def test_grid_mentions_tiers(self, role_defs_content: str) -> None:
         """The grid should reference the model tiers."""
         start = role_defs_content.index("## Model Tier Grid")
-        next_section = role_defs_content.index("\n## ", start + 1)
+        try:
+            next_section = role_defs_content.index("\n## ", start + 1)
+        except ValueError:
+            next_section = len(role_defs_content)
         grid_section = role_defs_content[start:next_section]
         assert "Heavy" in grid_section
         assert "Mid" in grid_section
@@ -185,7 +191,10 @@ class TestModelTierGrid:
     def test_grid_mentions_reasoning_configs(self, role_defs_content: str) -> None:
         """The grid should reference reasoning configurations."""
         start = role_defs_content.index("## Model Tier Grid")
-        next_section = role_defs_content.index("\n## ", start + 1)
+        try:
+            next_section = role_defs_content.index("\n## ", start + 1)
+        except ValueError:
+            next_section = len(role_defs_content)
         grid_section = role_defs_content[start:next_section]
         assert "default reasoning" in grid_section
         assert "high reasoning" in grid_section
@@ -206,7 +215,11 @@ class TestFallbackChainBestPractices:
     def test_has_five_rules(self, role_defs_content: str) -> None:
         """Should contain 5 numbered rules."""
         start = role_defs_content.index("## Fallback Chain Best Practices")
-        fallback_section = role_defs_content[start:]
+        try:
+            next_section = role_defs_content.index("\n## ", start + 1)
+        except ValueError:
+            next_section = len(role_defs_content)
+        fallback_section = role_defs_content[start:next_section]
         # Count numbered rules (1. through 5.)
         for i in range(1, 6):
             assert f"{i}. " in fallback_section, (
