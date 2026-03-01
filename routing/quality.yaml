@@ -7,21 +7,25 @@ roles:
     description: "Code generation, implementation, debugging"
     candidates:
       - provider: anthropic
-        model: claude-sonnet-*
+        model: claude-sonnet-4-6
       - provider: openai
-        model: gpt-5.*-codex
+        model: gpt-5.3-codex
+      - provider: google
+        model: gemini-3.1-pro-preview
       - provider: github-copilot
-        model: claude-sonnet-*
+        model: claude-sonnet-4.6
 
   coding-image:
     description: "Image-related code work (UI, diagrams, vision tasks)"
     candidates:
-      - provider: openai
-        model: gpt-5.*
       - provider: google
-        model: gemini-*-pro
+        model: gemini-3.1-pro-preview
       - provider: anthropic
-        model: claude-sonnet-*
+        model: claude-sonnet-4-6
+      - provider: openai
+        model: gpt-5.3-codex
+      - provider: github-copilot
+        model: claude-sonnet-4.6
 
   planning:
     description: "Architecture, design, complex multi-step reasoning"
@@ -30,8 +34,12 @@ roles:
         model: claude-opus-4-6
         config:
           reasoning_effort: high
+      - provider: google
+        model: gemini-3.1-pro-preview
+        config:
+          reasoning_effort: high
       - provider: openai
-        model: gpt-5.*-pro
+        model: gpt-5.2-pro
         config:
           reasoning_effort: high
       - provider: github-copilot
@@ -43,21 +51,25 @@ roles:
     description: "Quick parsing, classification, utility work"
     candidates:
       - provider: anthropic
-        model: claude-sonnet-*
+        model: claude-sonnet-4-6
       - provider: openai
-        model: gpt-5.*
+        model: gpt-5.2
+      - provider: google
+        model: gemini-3-flash-preview
       - provider: github-copilot
-        model: claude-sonnet-*
+        model: claude-sonnet-4.6
 
   general:
     description: "Balanced catch-all for unspecialized tasks"
     candidates:
       - provider: anthropic
-        model: claude-sonnet-*
+        model: claude-sonnet-4-6
       - provider: openai
-        model: gpt-5.*
+        model: gpt-5.2
+      - provider: google
+        model: gemini-3.1-pro-preview
       - provider: github-copilot
-        model: claude-sonnet-*
+        model: claude-sonnet-4.6
 
   research:
     description: "Deep analysis, web search, long-horizon investigation"
@@ -67,16 +79,24 @@ roles:
         config:
           reasoning_effort: high
       - provider: openai
-        model: gpt-5.*-pro
+        model: gpt-5.2-pro
         config:
           reasoning_effort: high
+      - provider: google
+        model: gemini-3.1-pro-preview
+        config:
+          reasoning_effort: high
+      - provider: github-copilot
+        model: claude-opus-4.6
 
   agentic:
     description: "Multi-turn autonomous tool use and task execution"
     candidates:
       - provider: anthropic
-        model: claude-sonnet-*
+        model: claude-sonnet-4-6
       - provider: openai
-        model: gpt-5.*
+        model: gpt-5.3-codex
+      - provider: google
+        model: gemini-3.1-pro-preview
       - provider: github-copilot
-        model: claude-sonnet-*
+        model: claude-sonnet-4.6

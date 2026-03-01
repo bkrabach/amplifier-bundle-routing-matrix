@@ -6,83 +6,99 @@ roles:
   coding:
     description: "Code generation, implementation, debugging"
     candidates:
-      - provider: github-copilot
-        model: gpt-4.*
-      - provider: ollama
-        model: "*"
       - provider: anthropic
-        model: claude-haiku-*
+        model: claude-haiku-4-5
       - provider: openai
         model: gpt-5-mini
       - provider: google
-        model: gemini-*-flash
+        model: gemini-3-flash-preview
+      - provider: github-copilot
+        model: gpt-4.1
+      - provider: github-copilot
+        model: claude-haiku-4.5
+      - provider: ollama
+        model: "*"
 
   coding-image:
     description: "Image-related code work (UI, diagrams, vision tasks)"
     candidates:
       - provider: google
-        model: gemini-*-flash
+        model: gemini-3-flash-preview
       - provider: github-copilot
-        model: gpt-4.*
+        model: gpt-4.1
       - provider: openai
         model: gpt-5-mini
+      - provider: anthropic
+        model: claude-haiku-4-5
 
   planning:
     description: "Architecture, design, complex multi-step reasoning"
     candidates:
-      - provider: github-copilot
-        model: claude-sonnet-*
       - provider: anthropic
-        model: claude-sonnet-*
+        model: claude-sonnet-4-6
       - provider: openai
-        model: gpt-5.*
+        model: gpt-5.2
       - provider: google
-        model: gemini-*-pro
+        model: gemini-3.1-pro-preview
+      - provider: github-copilot
+        model: claude-sonnet-4.6
+      - provider: github-copilot
+        model: gpt-5.2
 
   fast:
     description: "Quick parsing, classification, utility work"
     candidates:
+      - provider: anthropic
+        model: claude-haiku-4-5
+      - provider: openai
+        model: gpt-5-mini
+      - provider: google
+        model: gemini-3-flash-preview
       - provider: github-copilot
-        model: gpt-4.*
+        model: gpt-4.1
+      - provider: github-copilot
+        model: gpt-5-mini
       - provider: ollama
         model: "*"
-      - provider: google
-        model: gemini-*-flash
-      - provider: anthropic
-        model: claude-haiku-*
 
   general:
     description: "Balanced catch-all for unspecialized tasks"
     candidates:
-      - provider: github-copilot
-        model: gpt-4.*
-      - provider: ollama
-        model: "*"
       - provider: anthropic
-        model: claude-haiku-*
+        model: claude-haiku-4-5
       - provider: openai
         model: gpt-5-mini
       - provider: google
-        model: gemini-*-flash
+        model: gemini-3-flash-preview
+      - provider: github-copilot
+        model: gpt-4.1
+      - provider: github-copilot
+        model: claude-haiku-4.5
+      - provider: ollama
+        model: "*"
 
   research:
     description: "Deep analysis, web search, long-horizon investigation"
     candidates:
-      - provider: github-copilot
-        model: claude-sonnet-*
-      - provider: openai
-        model: gpt-5.*
       - provider: anthropic
-        model: claude-sonnet-*
+        model: claude-sonnet-4-6
+      - provider: openai
+        model: gpt-5.2
+      - provider: google
+        model: gemini-3.1-pro-preview
+      - provider: github-copilot
+        model: claude-sonnet-4.6
 
   agentic:
     description: "Multi-turn autonomous tool use and task execution"
     candidates:
+      - provider: anthropic
+        model: claude-haiku-4-5
+      - provider: openai
+        model: gpt-5-mini
+      - provider: google
+        model: gemini-3-flash-preview
       - provider: github-copilot
-        model: gpt-4.*
+        model: gpt-4.1
       - provider: ollama
         model: "*"
-      - provider: google
-        model: gemini-*-flash
-      - provider: anthropic
-        model: claude-haiku-*
