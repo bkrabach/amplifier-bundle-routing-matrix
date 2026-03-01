@@ -9,7 +9,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from amplifier_hooks_routing import mount
+from amplifier_module_hooks_routing import mount
 
 
 # ---------------------------------------------------------------------------
@@ -91,11 +91,11 @@ class TestMount:
 
         # Patch __file__ so bundle_root resolves to tmp_path
         with patch(
-            "amplifier_hooks_routing.Path",
+            "amplifier_module_hooks_routing.Path",
             return_value=tmp_path
             / "modules"
             / "hooks-routing"
-            / "amplifier_hooks_routing"
+            / "amplifier_module_hooks_routing"
             / "__init__.py",
         ):
             # Instead of patching Path, let's directly pass config that
@@ -104,7 +104,7 @@ class TestMount:
 
         # Simpler approach: set up the real directory structure
         bundle_root = tmp_path / "bundle"
-        modules_dir = bundle_root / "modules" / "hooks-routing" / "amplifier_hooks_routing"
+        modules_dir = bundle_root / "modules" / "hooks-routing" / "amplifier_module_hooks_routing"
         modules_dir.mkdir(parents=True)
         routing_dir = bundle_root / "routing"
         routing_dir.mkdir()
@@ -131,7 +131,7 @@ class TestMount:
         fake_init = modules_dir / "__init__.py"
         fake_init.write_text("")
 
-        with patch("amplifier_hooks_routing.Path") as MockPath:
+        with patch("amplifier_module_hooks_routing.Path") as MockPath:
             MockPath.return_value = fake_init
             MockPath.__call__ = lambda self, x: Path(x)
             # This is tricky — let's use a different approach

@@ -29,8 +29,8 @@ async def mount(coordinator: Any, config: dict[str, Any] | None = None) -> None:
         bundle_root = Path(bundle_root_override)
     else:
         # Auto-discover via __file__ path traversal (modes pattern)
-        #   __file__  = .../amplifier_hooks_routing/__init__.py
-        #   parent    = .../amplifier_hooks_routing/
+        #   __file__  = .../amplifier_module_hooks_routing/__init__.py
+        #   parent    = .../amplifier_module_hooks_routing/
         #   parent x2 = .../hooks-routing/
         #   parent x3 = .../modules/
         #   parent x4 = bundle root

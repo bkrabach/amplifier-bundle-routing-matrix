@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from amplifier_hooks_routing.matrix_loader import (
+from amplifier_module_hooks_routing.matrix_loader import (
     compose_matrix,
     load_matrix,
     validate_matrix,

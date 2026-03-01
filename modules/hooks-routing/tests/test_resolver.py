@@ -7,7 +7,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from amplifier_hooks_routing.resolver import find_provider_by_type, resolve_model_role
+from amplifier_module_hooks_routing.resolver import find_provider_by_type, resolve_model_role
 
 
 # ---------------------------------------------------------------------------
