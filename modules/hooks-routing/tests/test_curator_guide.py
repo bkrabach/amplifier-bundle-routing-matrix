@@ -81,7 +81,11 @@ def _extract_section(content: str, heading: str) -> str:
         else:
             break
 
-    start = content.index(heading)
+    try:
+        start = content.index(heading)
+    except ValueError:
+        msg = f"Heading '{heading}' not found in guide"
+        raise ValueError(msg) from None
     # Find the next heading at the same or higher level
     search_from = start + len(heading)
     end = len(content)
@@ -291,9 +295,11 @@ class TestCurationPrinciples:
     def test_provider_naming_has_critical_warning(self, guide_content: str) -> None:
         """Must have a critical warning about anthropic hyphens vs copilot dots."""
         section = _extract_section(guide_content, "### Provider-Specific Naming")
-        # Should warn about the hyphen vs dot distinction
-        assert "hyphen" in section.lower() or "-" in section
-        assert "dot" in section.lower() or "." in section
+        # Should warn about the hyphen vs dot distinction using explicit terms
+        assert "hyphen" in section.lower(), (
+            "Provider-Specific Naming should mention 'hyphen'"
+        )
+        assert "dot" in section.lower(), "Provider-Specific Naming should mention 'dot'"
 
     def test_model_blacklist_subsection(self, guide_content: str) -> None:
         assert "### Model Blacklist" in guide_content
@@ -357,8 +363,11 @@ class TestWhenToRefresh:
     def test_has_triggers(self, guide_content: str) -> None:
         """Should list triggers for when to refresh."""
         section = _extract_section(guide_content, "## When to Refresh")
-        # Should mention triggers or conditions
-        assert "trigger" in section.lower() or "when" in section.lower()
+        # Strip the heading itself so we test body content, not the title
+        body = section.split("\n", 1)[1] if "\n" in section else ""
+        assert "trigger" in body.lower(), (
+            "When to Refresh section body should describe triggers"
+        )
 
     def test_has_6_step_process(self, guide_content: str) -> None:
         """Should describe a 6-step refresh process."""
