@@ -76,7 +76,7 @@ async def mount(coordinator: Any, config: dict[str, Any] | None = None) -> None:
     # ------------------------------------------------------------------
     # Hook 1: session:start — resolve model_role for all agents
     # ------------------------------------------------------------------
-    async def on_session_start(event: str, data: dict[str, Any]) -> None:
+    async def on_session_start(event: str, data: dict[str, Any]) -> Any:
         providers = coordinator.get("providers") or {}
         agents = (
             coordinator.config.get("agents", {})
@@ -98,9 +98,12 @@ async def mount(coordinator: Any, config: dict[str, Any] | None = None) -> None:
             resolved = await resolve_model_role(model_role, effective_matrix, providers)
             if resolved:
                 agent_cfg["provider_preferences"] = [
-                    {"provider": r["provider"], "model": r["model"]}
-                    for r in resolved
+                    {"provider": r["provider"], "model": r["model"]} for r in resolved
                 ]
+
+        from amplifier_core.models import HookResult
+
+        return HookResult(action="continue")
 
     # ------------------------------------------------------------------
     # Hook 2: provider:request — inject available roles into context
